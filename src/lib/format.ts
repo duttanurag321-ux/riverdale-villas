@@ -24,3 +24,6 @@ export function normalizePhone(input: string): string | null {
 
 export const maskPan = (pan: string | null | undefined) => (pan ? "XXXXX" + pan.slice(5) : "—");
 export const titleCase = (s: string) => s.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+
+export const fmtDateTime = (d: string | null | undefined) =>
+  d ? new Date(d).toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" }) : "—";

@@ -17,9 +17,10 @@ export default async function Dashboard() {
   let body: React.ReactNode;
 
   if (me.role === "director") {
-    const [villas, customers, draft, confirmed, pendingPay] = await Promise.all([
+    const [villas, customers, draft, confirmed, pendingPay, pendingUpd] = await Promise.all([
       count("villas"), count("customers"), count("bookings", (q) => q.eq("status", "draft")),
       count("bookings", (q) => q.eq("status", "confirmed")), count("payments", (q) => q.eq("verification", "pending")),
+      count("construction_updates", (q) => q.eq("approval", "pending")),
     ]);
     const { data: live } = await sb.from("bookings").select("id").eq("status", "confirmed");
     const ids = (live ?? []).map((b: any) => b.id);
@@ -35,8 +36,9 @@ export default async function Dashboard() {
         <Stat label="Contract value" value={inr(sum("contract_value_paise"))} /><Stat label="Confirmed collections" value={inr(sum("net_receipts_paise"))} tone="good" />
         <Stat label="Outstanding" value={inr(sum("outstanding_paise"))} /><Stat label="Overdue" value={inr(sum("overdue_paise"))} tone={sum("overdue_paise") ? "warn" : undefined} />
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4"><Stat label="Payments awaiting verification" value={pendingPay} tone={pendingPay ? "warn" : undefined} /></div>
-      <p className="mt-6 text-sm text-slate-500">Payment verification, construction approvals and follow-ups arrive in the next phases.</p>
+      <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4"><Stat label="Payments awaiting verification" value={pendingPay} tone={pendingPay ? "warn" : undefined} />
+        <Link href="/construction/approvals"><Stat label="Construction updates to approve" value={pendingUpd} tone={pendingUpd ? "warn" : undefined} /></Link></div>
+      <p className="mt-6 text-sm text-slate-500">Payment verification and follow-ups arrive in the next phases.</p>
     </>);
   } else if (me.role === "salesperson") {
     const [customers, bookings, tasks] = await Promise.all([count("customers"), count("bookings", (q) => q.eq("status", "confirmed")), count("follow_up_tasks", (q) => q.eq("status", "open"))]);
@@ -45,7 +47,7 @@ export default async function Dashboard() {
     const [villas, pending] = await Promise.all([count("villas"), count("construction_updates", (q) => q.eq("approval", "pending"))]);
     body = (<>
       <div className="grid grid-cols-2 gap-3"><Stat label="Villas assigned to me" value={villas} /><Stat label="Updates awaiting approval" value={pending} /></div>
-      <Card className="mt-4 text-sm text-slate-600">The &ldquo;Update Construction&rdquo; screen with photo upload is built in the next phase.</Card>
+      <Link href="/construction/update" className={`${btnCls} mt-4 w-full py-4 text-base sm:w-auto`}>Update Construction</Link>
     </>);
   }
 

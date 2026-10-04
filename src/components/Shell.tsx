@@ -3,9 +3,9 @@ import type { Me, Role } from "@/lib/auth";
 import { titleCase } from "@/lib/format";
 
 const NAV: Record<Role, { href: string; label: string }[]> = {
-  director: [{ href: "/dashboard", label: "Dashboard" }, { href: "/villas", label: "Villas" }, { href: "/customers", label: "Customers" }, { href: "/bookings", label: "Bookings" }, { href: "/users", label: "Users" }],
-  salesperson: [{ href: "/dashboard", label: "Dashboard" }, { href: "/customers", label: "Customers" }, { href: "/bookings", label: "Bookings" }, { href: "/villas", label: "Villas" }],
-  site_manager: [{ href: "/dashboard", label: "Dashboard" }, { href: "/villas", label: "Villas" }],
+  director: [{ href: "/dashboard", label: "Dashboard" }, { href: "/villas", label: "Villas" }, { href: "/customers", label: "Customers" }, { href: "/bookings", label: "Bookings" }, { href: "/construction", label: "Construction" }, { href: "/users", label: "Users" }],
+  salesperson: [{ href: "/dashboard", label: "Dashboard" }, { href: "/customers", label: "Customers" }, { href: "/bookings", label: "Bookings" }, { href: "/construction", label: "Construction" }, { href: "/villas", label: "Villas" }],
+  site_manager: [{ href: "/dashboard", label: "Dashboard" }, { href: "/construction", label: "Construction" }, { href: "/villas", label: "Villas" }],
 };
 
 export default function Shell({ me, children }: { me: Me; children: React.ReactNode }) {

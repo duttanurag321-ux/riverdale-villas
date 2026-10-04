@@ -41,7 +41,7 @@ export default async function Villas({ searchParams }: { searchParams: { q?: str
         <Table head={["Villa", "Project", "Configuration", "Status", "Current stage", ...(showPrice ? ["List price"] : []), "Expected completion"]}>
           {rows.map((v) => (
             <tr key={v.id}>
-              <td className="px-3 py-2 font-medium">{v.villa_number}</td><td className="px-3 py-2">{v.projects?.name}</td>
+              <td className="px-3 py-2 font-medium"><Link className="text-brand underline" href={`/construction/villa/${v.id}`}>{v.villa_number}</Link></td><td className="px-3 py-2">{v.projects?.name}</td>
               <td className="px-3 py-2">{v.configuration ?? "—"}{v.land_area ? ` · ${v.land_area} ${v.land_unit}` : ""}</td>
               <td className="px-3 py-2"><Badge tone={tone(v.status) as any}>{titleCase(v.status)}</Badge></td>
               <td className="px-3 py-2">{v.construction_stages?.name ?? "Not started"}</td>
