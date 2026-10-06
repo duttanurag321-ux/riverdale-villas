@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
 export const opt = (fd: FormData, k: string) => str(fd, k) || null;
 
 export function back(path: string, kind: "error" | "ok", msg: string): never {
+  if (kind === "ok") revalidatePath("/", "layout");   // after a change, drop cached pages so lists are never stale
   redirect(`${path}${path.includes("?") ? "&" : "?"}${kind}=${encodeURIComponent(msg)}`);
 }
 

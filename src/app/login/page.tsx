@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import Link from "next/link";
 import { login } from "./actions";
 import { Card, Field, Flash, btnCls, inputCls } from "@/components/ui";
@@ -12,7 +13,7 @@ export default function LoginPage({ searchParams }: { searchParams: { error?: st
           <form action={login} className="space-y-4">
             <Field label="Email"><input name="email" type="email" required autoComplete="username" className={inputCls} /></Field>
             <Field label="Password"><input name="password" type="password" required autoComplete="current-password" className={inputCls} /></Field>
-            <button className={`${btnCls} w-full`}>Log in</button>
+            <SubmitButton className={`${btnCls} w-full`}>Log in</SubmitButton>
           </form>
           <div className="mt-4 text-center text-sm"><Link href="/forgot-password" className="text-brand underline">Forgot password?</Link></div>
         </Card>

@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Card, Field, Flash, btnCls, inputCls } from "@/components/ui";
@@ -24,7 +25,7 @@ export default async function ResetPage({ searchParams }: { searchParams: { erro
         <form action={setPassword} className="space-y-4">
           <Field label="New password" hint="At least 10 characters."><input name="password" type="password" required minLength={10} autoComplete="new-password" className={inputCls} /></Field>
           <Field label="Confirm password"><input name="confirm" type="password" required minLength={10} autoComplete="new-password" className={inputCls} /></Field>
-          <button className={`${btnCls} w-full`}>Save password</button>
+          <SubmitButton className={`${btnCls} w-full`}>Save password</SubmitButton>
         </form>
       </Card></div>
     </main>

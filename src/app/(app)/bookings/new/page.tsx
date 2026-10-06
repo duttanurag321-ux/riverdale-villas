@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import Link from "next/link";
 import { requireMe } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -32,7 +33,7 @@ export default async function NewBooking({ searchParams }: { searchParams: { err
         <Field label="Expected construction start"><input name="expected_start" type="date" className={inputCls} /></Field>
         <Field label="Expected handover"><input name="expected_handover" type="date" className={inputCls} /></Field>
         <Field label="Notes"><input name="notes" className={inputCls} /></Field>
-        <div className="sm:col-span-2"><button className={btnCls}>Create draft booking</button></div>
+        <div className="sm:col-span-2"><SubmitButton className={btnCls}>Create draft booking</SubmitButton></div>
       </form></Card>
     </>
   );

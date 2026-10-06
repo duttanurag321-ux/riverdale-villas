@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import { requireMe } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { titleCase } from "@/lib/format";
@@ -15,7 +16,7 @@ export default async function Users({ searchParams }: { searchParams: { ok?: str
         {(data ?? []).map((u: any) => (
           <tr key={u.id}><td className="px-3 py-2 font-medium">{u.full_name}</td><td className="px-3 py-2">{titleCase(u.role)}</td><td className="px-3 py-2">{u.phone ?? "—"}</td>
             <td className="px-3 py-2"><Badge tone={u.is_active ? "green" : "red"}>{u.is_active ? "Active" : "Deactivated"}</Badge></td>
-            <td className="px-3 py-2 text-right">{u.id !== me.id && <form action={setActive}><input type="hidden" name="id" value={u.id} /><input type="hidden" name="active" value={String(!u.is_active)} /><button className={btnGhostCls}>{u.is_active ? "Deactivate" : "Reactivate"}</button></form>}</td></tr>))}
+            <td className="px-3 py-2 text-right">{u.id !== me.id && <form action={setActive}><input type="hidden" name="id" value={u.id} /><input type="hidden" name="active" value={String(!u.is_active)} /><SubmitButton className={btnGhostCls}>{u.is_active ? "Deactivate" : "Reactivate"}</SubmitButton></form>}</td></tr>))}
       </Table>
       <h2 className="mb-2 mt-8 font-medium">Add employee</h2>
       <Card><form action={createEmployee} className="grid gap-4 sm:grid-cols-2">
@@ -24,7 +25,7 @@ export default async function Users({ searchParams }: { searchParams: { ok?: str
         <Field label="Role"><select name="role" required className={inputCls} defaultValue="salesperson"><option value="site_manager">Site Manager</option><option value="salesperson">Salesperson</option><option value="director">Director</option></select></Field>
         <Field label="Phone"><input name="phone" className={inputCls} /></Field>
         <Field label="Temporary password" hint="At least 10 characters. Share it privately."><input name="password" type="text" required minLength={10} autoComplete="off" className={inputCls} /></Field>
-        <div className="flex items-end"><button className={btnCls}>Create account</button></div>
+        <div className="flex items-end"><SubmitButton className={btnCls}>Create account</SubmitButton></div>
       </form></Card>
     </>
   );

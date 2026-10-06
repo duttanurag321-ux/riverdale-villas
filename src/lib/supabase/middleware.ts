@@ -13,7 +13,8 @@ export async function updateSession(request: NextRequest) {
       },
     },
   });
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: claims } = await supabase.auth.getClaims();   // also refreshes an expiring session
+  const user = claims?.claims?.sub ? claims.claims : null;
   const p = request.nextUrl.pathname;
   const isPublic = p.startsWith("/login") || p.startsWith("/forgot-password") || p.startsWith("/auth") || p === "/manifest.webmanifest";
   if (!user && !isPublic) {

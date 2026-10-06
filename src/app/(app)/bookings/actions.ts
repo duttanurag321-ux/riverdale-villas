@@ -43,3 +43,26 @@ export async function cancelBooking(fd: FormData) {
   const { error } = await createClient().rpc("cancel_booking", { p_booking: id, p_reason: str(fd, "reason") });
   if (error) back(P, "error", friendly(error)); back(P, "ok", "Booking cancelled. Its history has been kept.");
 }
+
+export async function amendSchedule(fd: FormData) {
+  await requireMe(["director"]); const id = str(fd, "booking_id"); const P = `/bookings/${id}`;
+  const changes: { milestone_id: string; amount_paise: number; due_days?: number }[] = [];
+  for (const [k, v] of fd.entries()) {
+    if (!k.startsWith("amt_")) continue;
+    const mid = k.slice(4); const paise = rupeesToPaise(String(v));
+    if (!paise) back(P, "error", "Every amount must be a valid number of rupees.");
+    const due = str(fd, "due_" + mid);
+    changes.push({ milestone_id: mid, amount_paise: paise!, ...(due !== "" ? { due_days: Number(due) } : {}) });
+  }
+  if (!changes.length) back(P, "error", "There are no future milestones to amend.");
+  const { error } = await createClient().rpc("amend_booking_schedule", { p_booking: id, p_changes: changes, p_reason: str(fd, "reason") });
+  if (error) back(P, "error", friendly(error));
+  back(P, "ok", "Schedule amended. The previous schedule has been saved in the history.");
+}
+
+export async function setHold(fd: FormData) {
+  await requireMe(["director"]); const id = str(fd, "booking_id"); const hold = str(fd, "hold") === "true";
+  const { error } = await createClient().rpc("set_milestone_hold", { p_milestone: str(fd, "milestone_id"), p_hold: hold, p_reason: opt(fd, "reason") });
+  if (error) back(`/bookings/${id}`, "error", friendly(error));
+  back(`/bookings/${id}`, "ok", hold ? "Milestone put on hold." : "Hold removed.");
+}

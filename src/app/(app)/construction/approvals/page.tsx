@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import { requireMe } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { fmtDateTime, titleCase } from "@/lib/format";
@@ -25,8 +26,8 @@ export default async function Approvals({ searchParams }: { searchParams: { ok?:
             <div className="mt-3 flex flex-wrap gap-2">{(photos ?? []).filter((p: any) => p.update_id === u.id).map((p: any) => signed.get(p.storage_path) && (
               <a key={p.storage_path} href={signed.get(p.storage_path)} target="_blank" rel="noreferrer"><img src={signed.get(p.storage_path)} alt="Construction photo" className="h-28 w-28 rounded object-cover" /></a>))}</div>
             <div className="mt-4 flex flex-wrap items-end gap-3 border-t border-slate-100 pt-3">
-              <form action={approveUpdate}><input type="hidden" name="id" value={u.id} /><button className={btnCls}>Approve</button></form>
-              <form action={rejectUpdate} className="flex flex-1 flex-wrap gap-2"><input type="hidden" name="id" value={u.id} /><input name="reason" required placeholder="Reason for rejection" className={`${inputCls} min-w-[12rem] flex-1`} /><button className={btnDangerCls}>Reject</button></form>
+              <form action={approveUpdate}><input type="hidden" name="id" value={u.id} /><SubmitButton className={btnCls}>Approve</SubmitButton></form>
+              <form action={rejectUpdate} className="flex flex-1 flex-wrap gap-2"><input type="hidden" name="id" value={u.id} /><input name="reason" required placeholder="Reason for rejection" className={`${inputCls} min-w-[12rem] flex-1`} /><SubmitButton className={btnDangerCls}>Reject</SubmitButton></form>
             </div>
           </Card>))}</div>)}
     </>

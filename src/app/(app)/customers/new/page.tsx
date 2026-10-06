@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import { requireMe } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, Field, Flash, PageHeader, btnCls, inputCls } from "@/components/ui";
@@ -21,7 +22,7 @@ export default async function NewCustomer({ searchParams }: { searchParams: { er
         <div className="sm:col-span-2"><Field label="Internal notes"><textarea name="notes" rows={2} className={inputCls} /></Field></div>
         <label className="flex items-start gap-2 text-sm sm:col-span-2"><input type="checkbox" name="whatsapp_opt_in" className="mt-1" />
           <span>Customer has agreed to receive WhatsApp messages about their booking. Tick only if you have their consent.</span></label>
-        <div className="sm:col-span-2"><button className={btnCls}>Save customer</button></div>
+        <div className="sm:col-span-2"><SubmitButton className={btnCls}>Save customer</SubmitButton></div>
       </form></Card>
     </>
   );

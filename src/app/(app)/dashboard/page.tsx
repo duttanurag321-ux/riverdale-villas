@@ -36,7 +36,7 @@ export default async function Dashboard() {
         <Stat label="Contract value" value={inr(sum("contract_value_paise"))} /><Stat label="Confirmed collections" value={inr(sum("net_receipts_paise"))} tone="good" />
         <Stat label="Outstanding" value={inr(sum("outstanding_paise"))} /><Stat label="Overdue" value={inr(sum("overdue_paise"))} tone={sum("overdue_paise") ? "warn" : undefined} />
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4"><Stat label="Payments awaiting verification" value={pendingPay} tone={pendingPay ? "warn" : undefined} />
+      <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4"><Link href="/payments"><Stat label="Payments awaiting verification" value={pendingPay} tone={pendingPay ? "warn" : undefined} /></Link>
         <Link href="/construction/approvals"><Stat label="Construction updates to approve" value={pendingUpd} tone={pendingUpd ? "warn" : undefined} /></Link></div>
       <p className="mt-6 text-sm text-slate-500">Payment verification and follow-ups arrive in the next phases.</p>
     </>);

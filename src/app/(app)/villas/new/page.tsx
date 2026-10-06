@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import { requireMe } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, Field, Flash, PageHeader, btnCls, inputCls } from "@/components/ui";
@@ -26,7 +27,7 @@ export default async function NewVilla({ searchParams }: { searchParams: { error
         <Field label="Site Manager"><select name="site_manager_id" className={inputCls} defaultValue=""><option value="">— none —</option>{sm.map((s: any) => <option key={s.id} value={s.id}>{s.full_name}</option>)}</select></Field>
         <Field label="Salesperson"><select name="salesperson_id" className={inputCls} defaultValue=""><option value="">— none —</option>{sp.map((s: any) => <option key={s.id} value={s.id}>{s.full_name}</option>)}</select></Field>
         <Field label="Expected completion"><input name="expected_completion" type="date" className={inputCls} /></Field>
-        <div className="sm:col-span-2"><button className={btnCls}>Create villa</button></div>
+        <div className="sm:col-span-2"><SubmitButton className={btnCls}>Create villa</SubmitButton></div>
       </form></Card>
     </>
   );

@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -21,7 +22,7 @@ export default function ForgotPage({ searchParams }: { searchParams: { error?: s
         <Flash error={searchParams.error} ok={searchParams.ok} />
         <form action={requestReset} className="space-y-4">
           <Field label="Email"><input name="email" type="email" required className={inputCls} /></Field>
-          <button className={`${btnCls} w-full`}>Send reset link</button>
+          <SubmitButton className={`${btnCls} w-full`}>Send reset link</SubmitButton>
         </form>
         <div className="mt-4 text-center text-sm"><Link href="/login" className="text-brand underline">Back to login</Link></div>
       </Card></div>

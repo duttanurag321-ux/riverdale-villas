@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import { requireMe } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, Flash, PageHeader, btnCls, btnGhostCls, inputCls } from "@/components/ui";
@@ -13,7 +14,7 @@ function Row({ s }: { s?: any }) {
       <label className="flex items-center gap-1 text-xs"><input type="checkbox" name="requires_approval" defaultChecked={s ? s.requires_approval : true} /> Needs approval</label>
       <label className="flex items-center gap-1 text-xs"><input type="checkbox" name="is_handover" defaultChecked={s?.is_handover} /> Handover</label>
       <label className="flex items-center gap-1 text-xs"><input type="checkbox" name="is_active" defaultChecked={s ? s.is_active : true} /> Active</label>
-      <button className={s ? btnGhostCls : btnCls}>{s ? "Save" : "Add"}</button>
+      <SubmitButton className={s ? btnGhostCls : btnCls}>{s ? "Save" : "Add"}</SubmitButton>
     </form>
   );
 }

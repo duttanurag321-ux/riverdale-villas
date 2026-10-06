@@ -53,6 +53,7 @@ export default function UpdateForm({ villas, stages, initialVilla }: { villas: O
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
+      {busy && <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80" role="status"><div className="rounded-lg bg-white px-5 py-4 text-center shadow-lg ring-1 ring-slate-200"><div className="mx-auto mb-2 h-6 w-6 animate-spin rounded-full border-4 border-brand/25 border-t-brand" /><p className="text-sm font-medium">Uploading photos and saving…</p><p className="text-xs text-slate-500">Please keep this screen open.</p></div></div>}
       {msg && <div role="alert" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">{msg}</div>}
       <label className="block"><span className="mb-1 block text-sm font-medium">1. Villa</span>
         <select className={inputCls} value={villa} onChange={(e) => setVilla(e.target.value)} required><option value="">Select villa…</option>{villas.map((v) => <option key={v.id} value={v.id}>{v.label}</option>)}</select></label>
