@@ -15,7 +15,7 @@ export default function TopProgress() {
       if (!a || a.target === "_blank" || a.hasAttribute("download") || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
       const u = new URL(a.href, location.href);
       if (u.origin !== location.origin || u.pathname + u.search === location.pathname + location.search) return;
-      if (u.pathname.startsWith("/receipts") || u.pathname.startsWith("/statements")) return;   // file downloads
+      if (u.pathname.startsWith("/receipts") || u.pathname.startsWith("/statements") || u.pathname.startsWith("/exports")) return;   // file downloads
       start();
     };
     const onSubmit = (e: SubmitEvent) => {
