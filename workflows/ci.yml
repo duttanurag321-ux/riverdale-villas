@@ -1,0 +1,18 @@
+# Optional safety net: on every change GitHub checks that the app still builds. Free for private repos within GitHub's monthly minutes.
+name: Build check
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: build-check-placeholder
+          SUPABASE_SERVICE_ROLE_KEY: build-check-placeholder
+          APP_BASE_URL: http://localhost:3000
