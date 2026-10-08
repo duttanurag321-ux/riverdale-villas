@@ -26,12 +26,12 @@ export default async function Customers({ searchParams }: { searchParams: { q?: 
       <Flash error={searchParams.error} ok={searchParams.ok} />
       <form className="mb-4 flex gap-2"><input name="q" defaultValue={searchParams.q} placeholder="Search name or phone" className={`${inputCls} max-w-xs`} /><button className={btnGhostCls}>Search</button></form>
       {rows.length === 0 ? <Empty>No customers found.</Empty> : (
-        <Table head={["Name", "Phone", "Email", "WhatsApp opt-in", ...(me.role === "director" ? ["PAN (masked)"] : [])]}>
+        <Table head={["Name", "Phone", "Email", "WhatsApp opt-in", ...(me.role === "director" ? ["PAN (masked)", ""] : [])]}>
           {rows.map((c) => (
             <tr key={c.id}><td className="px-3 py-2 font-medium">{c.full_name}</td>
               <td className="px-3 py-2"><a className="text-brand underline" href={`tel:${c.phone}`}>{c.phone}</a></td><td className="px-3 py-2">{c.email ?? "—"}</td>
               <td className="px-3 py-2"><Badge tone={c.whatsapp_opt_in ? "green" : "slate"}>{c.whatsapp_opt_in ? "Opted in" : "No"}</Badge></td>
-              {me.role === "director" && <td className="px-3 py-2 font-mono text-xs">{maskPan(pans.get(c.id))}</td>}</tr>))}
+              {me.role === "director" && <><td className="px-3 py-2 font-mono text-xs">{maskPan(pans.get(c.id))}</td><td className="px-3 py-2 text-right"><Link className="text-brand underline" href={`/customers/${c.id}/edit`}>Edit</Link></td></>}</tr>))}
         </Table>)}
       {pages > 1 && <div className="mt-4 flex items-center justify-between text-sm">
         {page > 1 ? <Link className={btnGhostCls} href={link(page - 1)}>Previous</Link> : <span />}<span>Page {page} of {pages}</span>

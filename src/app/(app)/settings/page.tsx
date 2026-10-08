@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireMe } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, Field, Flash, PageHeader, btnCls, btnGhostCls, inputCls } from "@/components/ui";
@@ -21,7 +22,7 @@ export default async function Settings({ searchParams }: { searchParams: { ok?: 
   const S: Record<string, any> = Object.fromEntries((st ?? []).map((r: any) => [r.key, r.value])); const u: any = usage ?? {};
   return (
     <>
-      <PageHeader title="Settings" />
+      <PageHeader title="Settings" action={<div className="flex gap-2"><Link href="/import" className={btnGhostCls}>Import CSV</Link><Link href="/backup" className={btnGhostCls}>Backups</Link></div>} />
       <Flash error={searchParams.error} ok={searchParams.ok} />
       <h2 className="mb-2 font-medium">Free-plan usage</h2>
       <Card className="space-y-4">

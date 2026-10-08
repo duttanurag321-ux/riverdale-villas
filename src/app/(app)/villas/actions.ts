@@ -35,3 +35,18 @@ export async function createVilla(fd: FormData) {
   if (pErr) { await sb.from("villas").delete().eq("id", villa!.id); back(P, "error", friendly(pErr)); }
   back("/villas", "ok", `Villa ${villaNumber} created.`);
 }
+
+export async function updateVilla(fd: FormData) {
+  await requireMe(["director"]);
+  const sb = createClient(); const id = str(fd, "id"); const P = `/villas/${id}/edit`;
+  const price = rupeesToPaise(str(fd, "price")); if (!price) back(P, "error", "Enter a valid list price in rupees.");
+  const area = opt(fd, "land_area"); if (area && !(Number(area) > 0)) back(P, "error", "Land area must be a positive number.");
+  const patch: Record<string, unknown> = { configuration: opt(fd, "configuration"), plot_details: opt(fd, "plot_details"), land_area: area ? Number(area) : null,
+    land_unit: str(fd, "land_unit") || "katha", site_manager_id: opt(fd, "site_manager_id"), salesperson_id: opt(fd, "salesperson_id"), expected_completion: opt(fd, "expected_completion"), remarks: opt(fd, "remarks") };
+  const status = str(fd, "status"); if (["available", "reserved", "inactive"].includes(status)) patch.status = status;   // other statuses follow bookings and construction automatically
+  const { error } = await sb.from("villas").update(patch).eq("id", id);
+  if (error) back(P, "error", friendly(error));
+  const { error: pErr } = await sb.from("villa_pricing").upsert({ villa_id: id, list_price_paise: price });
+  if (pErr) back(P, "error", friendly(pErr));
+  back("/villas", "ok", "Villa updated.");
+}

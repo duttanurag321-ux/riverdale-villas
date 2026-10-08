@@ -38,7 +38,7 @@ export default async function Villas({ searchParams }: { searchParams: { q?: str
         <button className={btnGhostCls}>Filter</button>
       </form>
       {rows.length === 0 ? <Empty>{me.role === "director" ? "No villas yet. Add your first villa." : "No villas are assigned to you yet."}</Empty> : (
-        <Table head={["Villa", "Project", "Configuration", "Status", "Current stage", ...(showPrice ? ["List price"] : []), "Expected completion"]}>
+        <Table head={["Villa", "Project", "Configuration", "Status", "Current stage", ...(showPrice ? ["List price"] : []), "Expected completion", ...(me.role === "director" ? [""] : [])]}>
           {rows.map((v) => (
             <tr key={v.id}>
               <td className="px-3 py-2 font-medium"><Link className="text-brand underline" href={`/construction/villa/${v.id}`}>{v.villa_number}</Link></td><td className="px-3 py-2">{v.projects?.name}</td>
@@ -46,7 +46,7 @@ export default async function Villas({ searchParams }: { searchParams: { q?: str
               <td className="px-3 py-2"><Badge tone={tone(v.status) as any}>{titleCase(v.status)}</Badge></td>
               <td className="px-3 py-2">{v.construction_stages?.name ?? "Not started"}</td>
               {showPrice && <td className="px-3 py-2">{inr(prices.get(v.id))}</td>}
-              <td className="px-3 py-2">{fmtDate(v.expected_completion)}</td>
+              <td className="px-3 py-2">{fmtDate(v.expected_completion)}</td>{me.role === "director" && <td className="px-3 py-2 text-right"><Link className="text-brand underline" href={`/villas/${v.id}/edit`}>Edit</Link></td>}
             </tr>))}
         </Table>)}
       {pages > 1 && <div className="mt-4 flex items-center justify-between text-sm">
