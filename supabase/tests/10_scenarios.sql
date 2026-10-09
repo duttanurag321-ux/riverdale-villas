@@ -65,6 +65,8 @@ select tests.expect_fail(format($$select public.verify_payment(%L)$$, :'pay1'), 
 select tests.eq((select outstanding_paise from v_booking_balances where booking_id='c0000000-0000-0000-0000-0000000000c1'), 540000000::bigint, 'overall outstanding after Rs 6,00,000');
 
 -- === Construction: Site Manager submits foundation completion ===
+select tests.as_user(:dir);
+select public.release_construction('c0000000-0000-0000-0000-0000000000c1', true);
 select tests.as_user(:sm);
 select tests.eq((select count(*) from customers)::int, 0, 'site manager sees no customers');
 select tests.eq((select count(*) from payments)::int, 0, 'site manager sees no payments');

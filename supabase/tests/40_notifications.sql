@@ -19,6 +19,7 @@ insert into customers(id,full_name,phone,salesperson_id,whatsapp_opt_in,whatsapp
 insert into bookings(id,villa_id,customer_id,salesperson_id,package_price_paise) values (:bk,'c0000000-0000-0000-0000-0000000000a4','c0000000-0000-0000-0000-0000000000b4',:sal,600000000);
 select public.create_booking_schedule(:bk,'c0000000-0000-0000-0000-0000000000d1');
 select public.confirm_booking(:bk);
+select public.release_construction(:bk, true);
 select tests.as_admin();
 select tests.eq((select count(*) from notifications where user_id=:sal and title like 'Booking confirmed: Villa A4%')::int, 1, 'salesperson notified of confirmed booking');
 select tests.eq((select count(*) from notifications where user_id=:dir and title like 'Booking confirmed: Villa A4%')::int >= 1, true, 'director notified of confirmed booking');
@@ -124,7 +125,7 @@ select tests.expect_fail($$select public.process_pending_events()$$, 'salesperso
 select tests.expect_fail($$select public.usage_stats()$$, 'salesperson cannot read usage stats');
 select tests.as_user(:dir);
 select tests.eq((public.usage_stats()->>'db_bytes')::bigint > 0, true, 'director can read usage stats');
-select tests.eq((select count(*) from message_templates)::int, 7, 'director sees all 7 templates');
+select tests.eq((select count(*) from message_templates)::int, 8, 'director sees all 8 templates');
 update message_templates set body = 'Hi {{customer_name}}!' where kind = 'handover';
 select tests.as_admin();
 select tests.eq(public.render_template('handover', '{"customer_name":"Asha"}'::jsonb), 'Hi Asha!', 'edited template is used and variables are filled');
