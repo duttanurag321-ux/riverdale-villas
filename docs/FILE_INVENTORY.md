@@ -1,6 +1,6 @@
 # File inventory
 
-Every file in the project (122 files). Generated at build time.
+Every file in the project (129 files). Generated at build time.
 
 - `.env.example`
 - `.github/workflows/ci.yml`
@@ -13,6 +13,8 @@ Every file in the project (122 files). Generated at build time.
 - `docs/DATABASE_SCHEMA.md`
 - `docs/DEPLOYMENT_GUIDE.md`
 - `docs/DIRECTOR_MANUAL.md`
+- `docs/DIRECTOR_QUICK_GUIDE.md`
+- `docs/FILE_INVENTORY.md`
 - `docs/GITHUB_WEB_WORKFLOW.md`
 - `docs/PHASE1_README.md`
 - `docs/PHASE2_README.md`
@@ -20,6 +22,7 @@ Every file in the project (122 files). Generated at build time.
 - `docs/PHASE4_README.md`
 - `docs/PHASE5_README.md`
 - `docs/PHASE6_README.md`
+- `docs/PHASE7_README.md`
 - `docs/SALESPERSON_MANUAL.md`
 - `docs/SECURITY_CHECKLIST.md`
 - `docs/SITE_MANAGER_MANUAL.md`
@@ -32,6 +35,7 @@ Every file in the project (122 files). Generated at build time.
 - `package.json`
 - `postcss.config.js`
 - `src/app/(app)/backup/page.tsx`
+- `src/app/(app)/bookings/[id]/demand/page.tsx`
 - `src/app/(app)/bookings/[id]/page.tsx`
 - `src/app/(app)/bookings/actions.ts`
 - `src/app/(app)/bookings/new/page.tsx`
@@ -56,6 +60,7 @@ Every file in the project (122 files). Generated at build time.
 - `src/app/(app)/loading.tsx`
 - `src/app/(app)/messages/actions.ts`
 - `src/app/(app)/messages/page.tsx`
+- `src/app/(app)/more/page.tsx`
 - `src/app/(app)/notifications/actions.ts`
 - `src/app/(app)/notifications/page.tsx`
 - `src/app/(app)/payments/actions.ts`
@@ -114,12 +119,14 @@ Every file in the project (122 files). Generated at build time.
 - `supabase/migrations/007_notifications_free.sql`
 - `supabase/migrations/008_schedule_jobs.sql`
 - `supabase/migrations/009_csv_import.sql`
+- `supabase/migrations/010_real_flow.sql`
 - `supabase/tests/00_supabase_shim.sql`
 - `supabase/tests/10_scenarios.sql`
 - `supabase/tests/20_construction.sql`
 - `supabase/tests/30_followups_amend.sql`
 - `supabase/tests/40_notifications.sql`
 - `supabase/tests/50_import.sql`
+- `supabase/tests/60_real_flow.sql`
 - `supabase/tests/run_tests.sh`
 - `tailwind.config.ts`
 - `tsconfig.json`

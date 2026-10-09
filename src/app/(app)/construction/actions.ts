@@ -30,8 +30,11 @@ export async function submitUpdate(i: SubmitInput): Promise<SubmitResult> {
 
 export async function approveUpdate(fd: FormData) {
   await requireMe(["director"]);
-  const { error } = await createClient().rpc("approve_construction_update", { p_update: str(fd, "id"), p_approve: true });
+  const sb = createClient(); const uid = str(fd, "id");
+  const { data: u } = await sb.from("construction_updates").select("booking_id").eq("id", uid).maybeSingle();
+  const { error } = await sb.rpc("approve_construction_update", { p_update: uid, p_approve: true });
   if (error) back("/construction/approvals", "error", friendly(error));
+  if (u?.booking_id) back(`/bookings/${u.booking_id}/demand?update=${uid}&approved=1`, "ok", "Approved.");
   back("/construction/approvals", "ok", "Approved. If this stage has a payment milestone in the booking's schedule, it is now active and the Salesperson has a follow-up task.");
 }
 

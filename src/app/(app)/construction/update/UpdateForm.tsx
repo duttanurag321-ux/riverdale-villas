@@ -17,7 +17,7 @@ async function compress(file: File): Promise<Blob> {
   return new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error("Could not read that photo"))), "image/jpeg", 0.8));
 }
 
-export default function UpdateForm({ villas, stages, initialVilla }: { villas: Opt[]; stages: Opt[]; initialVilla?: string }) {
+export default function UpdateForm({ villas, stages, initialVilla, locked = [] }: { villas: Opt[]; stages: Opt[]; initialVilla?: string; locked?: string[] }) {
   const router = useRouter();
   const requestId = useRef(crypto.randomUUID());   // same id on retry => no duplicate update
   const [villa, setVilla] = useState(initialVilla ?? "");
@@ -32,6 +32,7 @@ export default function UpdateForm({ villas, stages, initialVilla }: { villas: O
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault(); setMsg(null);
     if (!villa || !stage) return setMsg("Choose a villa and a stage.");
+    if (locked.includes(villa)) return setMsg("Construction cannot start on this villa yet. The Director will release it once the customer's payment is confirmed.");
     if (status === "completed" && files.length === 0) return setMsg("Add at least one photo to mark a stage completed.");
     if (status === "delayed" && !remarks.trim()) return setMsg("Please say why the work is delayed.");
     setBusy(true);
@@ -56,7 +57,7 @@ export default function UpdateForm({ villas, stages, initialVilla }: { villas: O
       {busy && <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80" role="status"><div className="rounded-lg bg-white px-5 py-4 text-center shadow-lg ring-1 ring-slate-200"><div className="mx-auto mb-2 h-6 w-6 animate-spin rounded-full border-4 border-brand/25 border-t-brand" /><p className="text-sm font-medium">Uploading photos and saving…</p><p className="text-xs text-slate-500">Please keep this screen open.</p></div></div>}
       {msg && <div role="alert" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">{msg}</div>}
       <label className="block"><span className="mb-1 block text-sm font-medium">1. Villa</span>
-        <select className={inputCls} value={villa} onChange={(e) => setVilla(e.target.value)} required><option value="">Select villa…</option>{villas.map((v) => <option key={v.id} value={v.id}>{v.label}</option>)}</select></label>
+        <select className={inputCls} value={villa} onChange={(e) => setVilla(e.target.value)} required><option value="">Select villa…</option>{villas.map((v) => <option key={v.id} value={v.id} disabled={locked.includes(v.id)}>{v.label}{locked.includes(v.id) ? " — waiting for payment" : ""}</option>)}</select></label>
       <label className="block"><span className="mb-1 block text-sm font-medium">2. Construction stage</span>
         <select className={inputCls} value={stage} onChange={(e) => setStage(e.target.value)} required><option value="">Select stage…</option>{stages.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select></label>
       <fieldset><legend className="mb-1 text-sm font-medium">3. What is the status?</legend>
@@ -69,7 +70,8 @@ export default function UpdateForm({ villas, stages, initialVilla }: { villas: O
       <label className="block"><span className="mb-1 block text-sm font-medium">5. Remarks {status === "delayed" ? "(reason required)" : "(optional)"}</span>
         <textarea rows={3} className={inputCls} value={remarks} onChange={(e) => setRemarks(e.target.value)} maxLength={1000} /></label>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={isIssue} onChange={(e) => setIsIssue(e.target.checked)} className="h-5 w-5" /> There is an issue the Director should know about</label>
-      <button disabled={busy} className="w-full rounded-md bg-brand px-4 py-4 text-base font-semibold text-white disabled:opacity-50">{busy ? "Uploading… please wait" : "Submit update"}</button>
+      {locked.includes(villa) && <div role="alert" className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">This villa is waiting for the customer's payment. The Director will tell you when construction can start.</div>}
+      <button disabled={busy || locked.includes(villa)} className="w-full rounded-md bg-brand px-4 py-4 text-base font-semibold text-white disabled:opacity-50">{busy ? "Uploading… please wait" : "Submit update"}</button>
     </form>
   );
 }

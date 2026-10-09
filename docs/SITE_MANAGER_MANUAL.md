@@ -10,7 +10,7 @@ You see only Dashboard, Construction and Villas, and only the villas assigned to
    4. Add **photos** (up to 6; the phone camera or gallery). Completed needs at least one photo.
    5. Write a remark. If **Delayed**, the reason is required. Tick "issue" if the Director should know.
    6. Tap **Submit update** and wait for "Uploading…" to finish. Do not tap again.
-3. **Approval**: stages that need approval show "Pending" until the Director decides. Payments are never triggered by you; only an approved stage can do that.
+3. **Locked villa**: a villa may show "waiting for payment". Construction cannot be recorded until the customer's payment is confirmed; the Director will tell you. **Approval**: stages that need approval show "Pending" until the Director decides. Payments are never triggered by you; only an approved stage can do that.
 4. **Rejected update**: you get an alert (bell) with the reason. Open the villa's **History**, then **Add update**, fix the problem (for example clearer photos) and submit again. The old one stays on record.
 5. **History**: Construction, **History** next to the villa shows every update, photo and decision. Nothing can be deleted.
 6. **Log out**: Log out link (top right on phone, bottom left on computer).

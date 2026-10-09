@@ -20,7 +20,8 @@ function Row({ tpl, stages, m, nextSeq }: { tpl: string; stages: any[]; m?: any;
       <label className="text-xs">Due after (days)<input name="due_days" type="number" min={0} defaultValue={m?.due_days ?? 7} className={`${inputCls} mt-1`} /></label>
       <label className="text-xs">Grace (days)<input name="grace_days" type="number" min={0} defaultValue={m?.grace_days ?? 0} className={`${inputCls} mt-1`} /></label>
       <div className="flex flex-wrap items-center gap-3 text-xs"><label className="flex items-center gap-1"><input type="checkbox" name="notify_customer" defaultChecked={m ? m.notify_customer : true} />Notify customer</label>
-        <label className="flex items-center gap-1"><input type="checkbox" name="is_mandatory" defaultChecked={m ? m.is_mandatory : true} />Mandatory</label></div>
+        <label className="flex items-center gap-1"><input type="checkbox" name="is_mandatory" defaultChecked={m ? m.is_mandatory : true} />Mandatory</label>
+        <label className="flex items-center gap-1"><input type="checkbox" name="is_pool" defaultChecked={m?.is_pool} />Balance asked for later, as needed</label></div>
       <div className="flex gap-2"><SubmitButton className={m ? btnGhostCls : btnCls} pendingText="Saving…">{m ? "Save" : "Add milestone"}</SubmitButton></div>
     </form>
   );

@@ -4,7 +4,7 @@ import type { Me, Role } from "@/lib/auth";
 import { titleCase } from "@/lib/format";
 
 const NAV: Record<Role, { href: string; label: string }[]> = {
-  director: [{ href: "/dashboard", label: "Dashboard" }, { href: "/villas", label: "Villas" }, { href: "/customers", label: "Customers" }, { href: "/bookings", label: "Bookings" }, { href: "/payments", label: "Payments" }, { href: "/followups", label: "Follow-ups" }, { href: "/construction", label: "Construction" }, { href: "/messages", label: "Messages" }, { href: "/reports", label: "Reports" }, { href: "/settings", label: "Settings" }, { href: "/users", label: "Users" }],
+  director: [{ href: "/dashboard", label: "Home" }, { href: "/bookings", label: "Bookings" }, { href: "/payments", label: "Money" }, { href: "/construction", label: "Building" }, { href: "/messages", label: "Messages" }, { href: "/more", label: "More" }],
   salesperson: [{ href: "/dashboard", label: "Dashboard" }, { href: "/followups", label: "Follow-ups" }, { href: "/customers", label: "Customers" }, { href: "/bookings", label: "Bookings" }, { href: "/payments", label: "Payments" }, { href: "/messages", label: "Messages" }, { href: "/construction", label: "Construction" }, { href: "/villas", label: "Villas" }],
   site_manager: [{ href: "/dashboard", label: "Dashboard" }, { href: "/construction", label: "Construction" }, { href: "/villas", label: "Villas" }],
 };

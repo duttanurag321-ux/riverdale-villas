@@ -22,10 +22,10 @@ export async function createTemplate(fd: FormData) {
 export async function saveMilestone(fd: FormData) {
   await requireMe(["director"]);
   const tpl = str(fd, "template_id"); const P = `/plans/${tpl}`; const id = str(fd, "id");
-  const kind = str(fd, "kind"); const trigger = str(fd, "trigger"); const seq = Number(str(fd, "seq"));
+  const isPool = fd.get("is_pool") === "on"; const kind = str(fd, "kind"); const trigger = isPool ? "manual" : str(fd, "trigger"); const seq = Number(str(fd, "seq"));
   if (!Number.isInteger(seq) || seq < 1) back(P, "error", "Order must be a whole number from 1.");
   if (!str(fd, "name")) back(P, "error", "Milestone name is required.");
-  const row: Record<string, unknown> = { template_id: tpl, seq, name: str(fd, "name"), kind, trigger, stage_id: opt(fd, "stage_id"),
+  const row: Record<string, unknown> = { template_id: tpl, seq, name: str(fd, "name"), kind, trigger, stage_id: isPool ? null : opt(fd, "stage_id"), is_pool: isPool,
     due_days: Number(str(fd, "due_days") || 0), grace_days: Number(str(fd, "grace_days") || 0), notify_customer: fd.get("notify_customer") === "on", is_mandatory: fd.get("is_mandatory") === "on",
     percent_bp: null, fixed_paise: null };
   if (kind === "percent") { const bp = percentToBp(str(fd, "value")); if (!bp) back(P, "error", "Enter a percentage like 10 or 12.5."); row.percent_bp = bp; }

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { fmtDate, fmtDateTime, inr, titleCase } from "@/lib/format";
 import { Badge, Card, Field, Flash, PageHeader, Stat, Table, btnCls, btnDangerCls, btnGhostCls, inputCls } from "@/components/ui";
 import { SubmitButton } from "@/components/SubmitButton";
-import { amendSchedule, applyTemplate, cancelBooking, confirmBooking, setHold } from "../actions";
+import { amendSchedule, applyTemplate, cancelBooking, confirmBooking, releaseConstruction, saveFunding, setHold } from "../actions";
 
 export default async function BookingDetail({ params, searchParams }: { params: { id: string }; searchParams: { ok?: string; error?: string } }) {
   const me = await requireMe(["director", "salesperson"]);
@@ -16,10 +16,11 @@ export default async function BookingDetail({ params, searchParams }: { params: 
     sb.from("v_milestone_balances").select("*").eq("booking_id", b.id).order("seq"),
     sb.from("v_booking_balances").select("*").eq("booking_id", b.id).maybeSingle(),
     isDir && b.status === "draft" ? sb.from("payment_plan_templates").select("id, name").eq("is_active", true) : Promise.resolve({ data: [] as any[] }),
-    sb.from("payments").select("id, kind, amount_paise, received_on, method, verification, receipt_number, created_at").eq("booking_id", b.id).order("created_at", { ascending: false }),
+    sb.from("payments").select("id, kind, amount_paise, received_on, method, verification, receipt_number, created_at, purpose, paid_by").eq("booking_id", b.id).order("created_at", { ascending: false }),
     isDir ? sb.from("booking_schedule_versions").select("version, reason, changed_at").eq("booking_id", b.id).order("version", { ascending: false }) : Promise.resolve({ data: [] as any[] }),
   ]);
-  const rows = (ms ?? []) as any[]; const future = rows.filter((m) => !m.activated_at && !m.cancelled);
+  const sgRes = isDir && b.status === "confirmed" ? await sb.rpc("suggest_demand", { p_booking: b.id }) : { data: null as any };
+  const sg: any = sgRes.data; const rows = ((ms ?? []) as any[]).sort((x, y) => Number(x.is_pool) - Number(y.is_pool) || x.seq - y.seq); const future = rows.filter((m) => !m.activated_at && !m.cancelled);
   const tone = (s: string) => ({ paid: "green", overdue: "red", due: "amber", partially_paid: "amber", upcoming: "blue", on_hold: "red" } as Record<string, any>)[s] ?? "slate";
   return (
     <>
@@ -28,6 +29,13 @@ export default async function BookingDetail({ params, searchParams }: { params: 
           {b.status !== "draft" && <a className={btnGhostCls} target="_blank" href={`/statements/${b.id}`}>Statement (PDF)</a>}
           {b.status === "confirmed" && <Link className={btnCls} href={`/payments/new?booking=${b.id}`}>Report payment</Link>}</div>} />
       <Flash error={searchParams.error} ok={searchParams.ok} />
+      {isDir && b.status === "draft" && <Card className="mb-4 border-l-4 border-l-brand text-sm"><b>Next step:</b> {rows.length === 0 ? "choose a payment plan below." : "when the customer is ready, press Confirm booking. Any token already received is counted towards the booking amount."}</Card>}
+      {isDir && b.status === "confirmed" && sg && (
+        <Card className="mb-4 flex flex-wrap items-center justify-between gap-3 border-l-4 border-l-brand">
+          <div><div className="font-medium">{!sg.gate_open ? "Construction is waiting for payment" : "Construction can go on"}</div>
+            <div className="text-sm text-slate-600">{!sg.gate_open ? `Construction starts after about ${Math.round(Number(sg.start_bp) / 100)}% is received (${inr(Math.floor((Number(sg.contract_value_paise) * Number(sg.start_bp)) / 10000))}). Received so far: ${inr(Number(sg.collected_paise))}.` : "Ask for a payment whenever the company needs funds."}
+              {Number(sg.suggested_paise) > 0 ? ` Suggestion: ask for ${inr(Number(sg.suggested_paise))}.` : ""}</div></div>
+          <Link className={btnCls} href={`/bookings/${b.id}/demand`}>Ask for payment</Link></Card>)}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Contract value" value={inr(b.contract_value_paise)} /><Stat label="Confirmed receipts" value={inr(bal?.net_receipts_paise)} tone="good" />
         <Stat label="Outstanding" value={inr(bal?.outstanding_paise)} /><Stat label="Overdue" value={inr(bal?.overdue_paise)} tone={bal?.overdue_paise ? "warn" : undefined} />
@@ -36,7 +44,7 @@ export default async function BookingDetail({ params, searchParams }: { params: 
       <h2 className="mb-2 mt-6 font-medium">Payment schedule {b.status !== "draft" && <span className="text-xs font-normal text-slate-500">(this booking&apos;s own copy)</span>}</h2>
       {rows.length === 0 ? <Card className="text-sm text-slate-600">No schedule yet.</Card> : (
         <Table head={["#", "Milestone", "Amount", "Paid", "Outstanding", "Due", "Status", ...(isDir && b.status === "confirmed" ? [""] : [])]}>
-          {rows.map((m) => (<tr key={m.id}><td className="px-3 py-2">{m.seq}</td><td className="px-3 py-2 font-medium">{m.name}</td><td className="px-3 py-2">{inr(m.amount_paise)}</td>
+          {rows.map((m) => (<tr key={m.id}><td className="px-3 py-2">{m.seq}</td><td className="px-3 py-2 font-medium">{m.name}{m.is_pool && <div className="text-xs font-normal text-slate-500">Not asked yet. Use &ldquo;Ask for payment&rdquo; when needed.</div>}</td><td className="px-3 py-2">{inr(m.amount_paise)}</td>
             <td className="px-3 py-2">{inr(m.paid_paise)}</td><td className="px-3 py-2">{m.activated_at ? inr(m.outstanding_paise) : "—"}</td><td className="px-3 py-2">{fmtDate(m.due_date)}</td>
             <td className="px-3 py-2"><Badge tone={tone(m.derived_status)}>{titleCase(m.derived_status)}</Badge>{m.on_hold_reason && <div className="text-xs text-slate-500">{m.on_hold_reason}</div>}</td>
             {isDir && b.status === "confirmed" && <td className="px-3 py-2">{m.activated_at && !m.cancelled && (
@@ -61,10 +69,26 @@ export default async function BookingDetail({ params, searchParams }: { params: 
             <Field label="Reason for amendment (required)"><input name="reason" required className={inputCls} /></Field>
             <SubmitButton className={btnCls} pendingText="Amending…">Save amendment</SubmitButton></form>
           {(vers ?? []).length > 0 && <ul className="mt-3 space-y-1 text-xs text-slate-600">{(vers ?? []).map((v: any) => <li key={v.version}>Version {v.version} saved {fmtDateTime(v.changed_at)} — {v.reason}</li>)}</ul>}</Card>)}
+      {isDir && b.status === "confirmed" && (
+        <Card className="mt-6 space-y-4">
+          <form action={releaseConstruction} className="flex flex-wrap items-center gap-3"><input type="hidden" name="booking_id" value={b.id} /><input type="hidden" name="release" value={String(!b.construction_released)} />
+            <div className="text-sm"><b>Construction start:</b> {b.construction_released ? "You have allowed it to start." : sg?.gate_open ? "Open (enough payment received)." : "Locked until enough payment is received."}</div>
+            <SubmitButton className={btnGhostCls} pendingText="Saving…">{b.construction_released ? "Lock again" : "Allow construction to start now"}</SubmitButton></form></Card>)}
+      {(isDir || b.funding_type === "loan") && b.status !== "cancelled" && (
+        <Card className="mt-4">
+          {isDir ? (
+            <form action={saveFunding} className="grid items-end gap-3 sm:grid-cols-4"><input type="hidden" name="booking_id" value={b.id} />
+              <Field label="How will the customer pay?"><select name="funding_type" defaultValue={b.funding_type} className={inputCls}><option value="self">Own money</option><option value="loan">Bank loan</option></select></Field>
+              <Field label="Bank (if loan)"><input name="loan_bank" defaultValue={b.loan_bank ?? ""} className={inputCls} /></Field>
+              <Field label="Loan sanctioned (₹)"><input name="loan_sanctioned" defaultValue={b.loan_sanctioned_paise ? String(Number(b.loan_sanctioned_paise) / 100) : ""} inputMode="decimal" className={inputCls} /></Field>
+              <SubmitButton className={btnGhostCls} pendingText="Saving…">Save</SubmitButton></form>
+          ) : <div className="text-sm">Bank loan: {b.loan_bank ?? "—"}</div>}
+          {b.funding_type === "loan" && <p className="mt-2 text-xs text-slate-500">Received from the bank so far: {inr((pays ?? []).filter((p: any) => p.paid_by === "bank" && p.verification === "verified" && p.kind === "receipt").reduce((a: number, p: any) => a + Number(p.amount_paise), 0))}. Record each loan instalment under Money, Report payment, choosing &ldquo;Bank (loan instalment)&rdquo;.</p>}
+        </Card>)}
       <h2 className="mb-2 mt-6 font-medium">Payment ledger</h2>
       {(pays ?? []).length === 0 ? <Card className="text-sm text-slate-600">No payments recorded yet.</Card> : (
         <Table head={["Received", "Type", "Amount", "Method", "Status", "Receipt"]}>
-          {(pays ?? []).map((p: any) => (<tr key={p.id}><td className="px-3 py-2">{fmtDate(p.received_on)}</td><td className="px-3 py-2">{p.kind === "reversal" ? "Reversal" : "Payment"}</td>
+          {(pays ?? []).map((p: any) => (<tr key={p.id}><td className="px-3 py-2">{fmtDate(p.received_on)}</td><td className="px-3 py-2">{p.kind === "reversal" ? "Reversal" : p.purpose === "token" ? "Token" : "Payment"}{p.paid_by === "bank" && <div className="text-xs text-slate-500">from bank loan</div>}</td>
             <td className="px-3 py-2">{inr(Number(p.amount_paise))}</td><td className="px-3 py-2">{titleCase(p.method)}</td>
             <td className="px-3 py-2"><Badge tone={p.verification === "verified" ? "green" : p.verification === "rejected" ? "red" : "amber"}>{p.verification === "pending" ? "Pending verification" : titleCase(p.verification)}</Badge></td>
             <td className="px-3 py-2">{p.kind === "receipt" && p.receipt_number ? <a className="text-brand underline" target="_blank" href={`/receipts/${p.id}`}>{p.receipt_number}</a> : "—"}</td></tr>))}

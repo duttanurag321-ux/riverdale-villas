@@ -1,5 +1,9 @@
 # Director manual
 
+**New to this? Read DIRECTOR_QUICK_GUIDE.md first (one page).** Menu now: Home, Bookings, Money, Building, Messages, More (customers, villas, follow-ups, reports, plans, staff, settings, import, backups).
+
+How Riverdale sales work in the system: token, 10% booking, 40-50% before construction (own money or loan), then **Ask for payment** whenever funds are needed, with a suggestion and your own choice of amount (rupees or percent).
+
 Menu: Dashboard, Villas, Customers, Bookings, Payments, Follow-ups, Construction, Messages, Reports, Settings, Users. The bell (top right) shows alerts.
 
 **Daily routine (5 minutes):** Dashboard numbers → bell alerts → Payments (verify) → Construction, Approvals → Follow-ups (escalations).

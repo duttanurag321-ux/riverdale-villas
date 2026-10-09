@@ -9,7 +9,7 @@ import { rejectPayment, reversePayment, verifyPayment } from "./actions";
 export default async function Payments({ searchParams }: { searchParams: { ok?: string; error?: string } }) {
   const me = await requireMe(["director", "salesperson"]);
   const sb = createClient(); const isDir = me.role === "director";
-  const sel = "id, booking_id, kind, amount_paise, received_on, method, reference, verification, receipt_number, created_at, reverses_payment_id, customers(full_name), bookings(villas(villa_number))";
+  const sel = "id, booking_id, kind, amount_paise, received_on, method, reference, verification, receipt_number, created_at, reverses_payment_id, purpose, paid_by, customers(full_name), bookings(villas(villa_number))";
   const [{ data: pend }, { data: recent }] = await Promise.all([
     sb.from("payments").select(sel).eq("verification", "pending").order("created_at"),
     sb.from("payments").select(sel).eq("verification", "verified").order("created_at", { ascending: false }).limit(30),
@@ -31,7 +31,7 @@ export default async function Payments({ searchParams }: { searchParams: { ok?: 
         <div className="space-y-3">{pending.map((p) => (
           <Card key={p.id}>
             <div className="flex flex-wrap items-center gap-2"><span className="font-medium">Villa {p.bookings?.villas?.villa_number} — {p.customers?.full_name}</span>
-              <span className="text-lg font-semibold">{inr(Number(p.amount_paise))}</span><Badge tone="amber">Pending</Badge>
+              <span className="text-lg font-semibold">{inr(Number(p.amount_paise))}</span><Badge tone="amber">Pending</Badge>{p.purpose === "token" && <Badge tone="blue">Token</Badge>}{p.paid_by === "bank" && <Badge tone="blue">From bank</Badge>}
               <span className="ml-auto text-xs text-slate-500">{titleCase(p.method)}{p.reference ? ` · ${p.reference}` : ""} · received {fmtDate(p.received_on)}</span></div>
             {isDir && (
               <div className="mt-3 flex flex-wrap items-end gap-3 border-t border-slate-100 pt-3">

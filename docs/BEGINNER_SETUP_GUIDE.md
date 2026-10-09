@@ -5,7 +5,7 @@ You do not need to know programming. You will use three websites in your browser
 ## Checklist (tick as you go)
 1. [ ] Unzip the project on your computer
 2. [ ] Create the Supabase project (Part 1)
-3. [ ] Run the 9 SQL files in order (Part 2)
+3. [ ] Run the 10 SQL files in order (Part 2)
 4. [ ] Turn on the daily scheduler (Part 3)
 5. [ ] Create the Director login (Part 4)
 6. [ ] Copy 3 keys from Supabase (Part 5)
@@ -25,7 +25,7 @@ Download the latest project ZIP. Windows: right-click it, **Extract All**. Open 
 
 ## Part 2 — Create the tables (SQL files)
 These files build the tables and rules. Run them **in this order, each once**:
-`001_schema`, `002_functions_and_triggers`, `003_rls_and_grants`, `004_seed_reference_data`, `005_construction_storage`, `006_followups_amendments`, `007_notifications_free`, then (after Part 3) `008_schedule_jobs`, then `009_csv_import`.
+`001_schema`, `002_functions_and_triggers`, `003_rls_and_grants`, `004_seed_reference_data`, `005_construction_storage`, `006_followups_amendments`, `007_notifications_free`, then (after Part 3) `008_schedule_jobs`, then `009_csv_import`, then `010_real_flow`.
 For each file:
 1. Left menu **SQL Editor**, **New query**.
 2. Open the file from `supabase/migrations` in Notepad, **Ctrl+A**, **Ctrl+C**.
@@ -76,8 +76,9 @@ To update later: **Add file**, **Upload files**, drag the new files, **Commit ch
 1. Open your address, log in as the Director.
 2. **Users**: add a Site Manager and a Salesperson (throwaway emails you control, temporary password 10+ characters).
 3. **Villas**, **Add villa** (project "Riverdale Villas (TEST)", villa A1, assign the Site Manager and Salesperson). **Customers**, **Add customer** (tick WhatsApp consent only for testing).
-4. **Payments**, **Payment plans**, create a plan with milestones totalling 100% (or run `supabase/dev/sample_payment_plan.sql`).
-5. **Bookings**, **New booking**, choose the plan, **Create draft**, **Confirm booking**.
+4. A starter plan already exists ("Riverdale standard": 10% at booking, the rest asked for as construction progresses). See it under **More, Payment plans**.
+5. **Bookings**, **New booking**, enter a token amount, keep the starter plan, **Create draft**. Report/verify the token under **Money**, then open the booking and **Confirm booking**.
+5b. On the booking page press **Ask for payment**: read the suggestion, ask for an amount. Record the payment as the Salesperson and verify it as Director. Construction stays locked until about 40% is received (or you press **Allow construction to start now**).
 6. Log in (private window) as the Site Manager on a phone: **Construction**, **Update construction**, submit a "Foundation completed" update with a photo. As Director approve it. As Salesperson check **Follow-ups**, **Messages** and the bell icon.
 7. Report a payment as Salesperson, verify as Director, open the receipt PDF.
 Every step above is described per role in the manuals.

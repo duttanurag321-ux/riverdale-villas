@@ -17,6 +17,8 @@ export default async function NewBooking({ searchParams }: { searchParams: { err
   ]);
   const taken = new Set((live ?? []).map((b: any) => b.villa_id));
   const free = ((villas ?? []) as any[]).filter((v) => !taken.has(v.id));
+  const defTpl = ((templates ?? []) as any[]).find((t) => /^riverdale/i.test(t.name))?.id ?? "";
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
   if (!free.length || !(customers ?? []).length) return (<><PageHeader title="New booking" /><Empty>You need at least one available villa and one customer first. <Link className="text-brand underline" href="/villas/new">Add a villa</Link> · <Link className="text-brand underline" href="/customers/new">Add a customer</Link></Empty></>);
   return (
     <>
@@ -28,7 +30,12 @@ export default async function NewBooking({ searchParams }: { searchParams: { err
         <Field label="Package price (₹)"><input name="price" required inputMode="decimal" className={inputCls} /></Field>
         <Field label="Extra agreed charges (₹)" hint="Optional, e.g. registration. Included in the contract value."><input name="extra" inputMode="decimal" className={inputCls} /></Field>
         <Field label="Salesperson"><select name="salesperson_id" className={inputCls} defaultValue=""><option value="">— none —</option>{(sp ?? []).map((s: any) => <option key={s.id} value={s.id}>{s.full_name}</option>)}</select></Field>
-        <Field label="Payment plan template" hint="Copied into this booking; later template edits never change it."><select name="template_id" className={inputCls} defaultValue=""><option value="">— choose later —</option>{(templates ?? []).map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}</select></Field>
+        <Field label="Payment plan template" hint="Copied into this booking; later template edits never change it."><select name="template_id" className={inputCls} defaultValue={defTpl}><option value="">— choose later —</option>{(templates ?? []).map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}</select></Field>
+        <div className="rounded-md bg-slate-50 p-3 text-sm sm:col-span-2"><b>Token received?</b> (optional) Many customers pay a token first. It is counted towards the booking amount automatically.</div>
+        <Field label="Token amount (₹)"><input name="token_amount" inputMode="decimal" className={inputCls} placeholder="100000" /></Field>
+        <Field label="Token paid by"><select name="token_method" className={inputCls} defaultValue="upi"><option value="upi">UPI</option><option value="bank_transfer">Bank transfer</option><option value="cheque">Cheque</option><option value="cash">Cash</option></select></Field>
+        <Field label="Token reference (UPI / bank)"><input name="token_reference" className={inputCls} /></Field>
+        <Field label="Token date"><input name="token_date" type="date" defaultValue={today} max={today} className={inputCls} /></Field>
         <Field label="Booking date"><input name="booking_date" type="date" className={inputCls} /></Field>
         <Field label="Expected construction start"><input name="expected_start" type="date" className={inputCls} /></Field>
         <Field label="Expected handover"><input name="expected_handover" type="date" className={inputCls} /></Field>

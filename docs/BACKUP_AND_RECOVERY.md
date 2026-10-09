@@ -14,7 +14,7 @@ Also export before any CSV import and before any big change.
 ## What recovery looks like
 - **Project paused** (free plan inactivity): Supabase dashboard, **Restore project**. Data is kept.
 - **Wrong data entered**: payments are never edited; use **Reverse**. Schedules: use **Amend**. Everything is in the audit log.
-- **Everything lost**: create a new Supabase project, run the 9 SQL files, create the Director, then re-enter data from your CSVs (the villas/customers CSV can be re-imported with the Import tool; bookings and payments must be re-entered, which is why monthly backups and the ledger CSV matter).
+- **Everything lost**: create a new Supabase project, run the 10 SQL files, create the Director, then re-enter data from your CSVs (the villas/customers CSV can be re-imported with the Import tool; bookings and payments must be re-entered, which is why monthly backups and the ledger CSV matter).
 - **Upgrade option**: Supabase Pro adds daily backups; worth it once real money is flowing.
 
 ## Limits

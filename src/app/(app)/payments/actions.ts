@@ -12,7 +12,7 @@ export async function reportPayment(fd: FormData) {
   if (!amount) back(P, "error", "Enter a valid amount in rupees.");
   if (!str(fd, "received_on")) back(P, "error", "Enter the date the money was received.");
   const { error } = await createClient().rpc("report_payment", { p_booking: booking, p_amount_paise: amount, p_method: str(fd, "method"),
-    p_reference: opt(fd, "reference"), p_received_on: str(fd, "received_on"), p_notes: opt(fd, "notes"), p_request_id: opt(fd, "request_id") });
+    p_reference: opt(fd, "reference"), p_received_on: str(fd, "received_on"), p_notes: opt(fd, "notes"), p_request_id: opt(fd, "request_id"), p_paid_by: str(fd, "paid_by") === "bank" ? "bank" : "customer" });
   if (error) back(P, "error", friendly(error));
   back("/payments", "ok", "Payment reported. It stays Pending until the Director verifies it, and does not reduce the balance yet.");
 }

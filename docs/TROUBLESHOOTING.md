@@ -10,6 +10,8 @@
 | SQL error "already exists" | File run twice | Harmless: it already worked |
 | SQL error "does not exist" | A file was skipped | Run files in numeric order 001 to 009 |
 | Photos won't upload | `005` not run, or photo over 5 MB / not an image, or you are not assigned to that villa | Check Storage bucket; assign the villa; retry |
+| "Construction cannot start yet" | The booking has not received the required % of the price (default 40%) and the Director has not released it | Director: booking page, "Allow construction to start now", or collect the payment; threshold in More, Settings |
+| "Only ₹X is left to ask for" / "no balance left" | The booking plan has no unasked balance left | Booking page, Change plan (amend), or confirm the plan has a "balance asked later" line |
 | Update list has no villa | Villa is Available (no confirmed booking) or not assigned to you | Confirm a booking; assign the Site Manager |
 | Can't confirm booking | Schedule missing or does not total the contract value | Apply a plan; fix amounts |
 | "Percentages total x%" | Plan not 100% | Fix on the plan page |
