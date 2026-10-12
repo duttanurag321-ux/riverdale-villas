@@ -1,6 +1,6 @@
 # File inventory
 
-Every file in the project (129 files). Generated at build time.
+Every file in the project (133 files). Generated at build time.
 
 - `.env.example`
 - `.github/workflows/ci.yml`
@@ -23,6 +23,7 @@ Every file in the project (129 files). Generated at build time.
 - `docs/PHASE5_README.md`
 - `docs/PHASE6_README.md`
 - `docs/PHASE7_README.md`
+- `docs/PHASE8_README.md`
 - `docs/SALESPERSON_MANUAL.md`
 - `docs/SECURITY_CHECKLIST.md`
 - `docs/SITE_MANAGER_MANUAL.md`
@@ -38,6 +39,7 @@ Every file in the project (129 files). Generated at build time.
 - `src/app/(app)/bookings/[id]/demand/page.tsx`
 - `src/app/(app)/bookings/[id]/page.tsx`
 - `src/app/(app)/bookings/actions.ts`
+- `src/app/(app)/bookings/new/SalesBookingForm.tsx`
 - `src/app/(app)/bookings/new/page.tsx`
 - `src/app/(app)/bookings/page.tsx`
 - `src/app/(app)/construction/actions.ts`
@@ -120,6 +122,7 @@ Every file in the project (129 files). Generated at build time.
 - `supabase/migrations/008_schedule_jobs.sql`
 - `supabase/migrations/009_csv_import.sql`
 - `supabase/migrations/010_real_flow.sql`
+- `supabase/migrations/011_autopilot.sql`
 - `supabase/tests/00_supabase_shim.sql`
 - `supabase/tests/10_scenarios.sql`
 - `supabase/tests/20_construction.sql`
@@ -127,6 +130,7 @@ Every file in the project (129 files). Generated at build time.
 - `supabase/tests/40_notifications.sql`
 - `supabase/tests/50_import.sql`
 - `supabase/tests/60_real_flow.sql`
+- `supabase/tests/70_autopilot.sql`
 - `supabase/tests/run_tests.sh`
 - `tailwind.config.ts`
 - `tsconfig.json`

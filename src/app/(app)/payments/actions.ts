@@ -46,3 +46,12 @@ export async function reversePayment(fd: FormData) {
   if (error) back("/payments", "error", friendly(error));
   back("/payments", "ok", "Payment reversed. The original entry is kept and a reversal entry was added.");
 }
+
+export async function verifyMany(fd: FormData) {
+  await requireMe(["director"]);
+  const ids = fd.getAll("ids").map(String).filter(Boolean);
+  if (!ids.length) back("/payments", "error", "Tick at least one payment.");
+  const sb = createClient(); let ok = 0, fail = 0;
+  for (const id of ids) { const { error } = await sb.rpc("verify_payment", { p_payment: id, p_allocations: null }); if (error) fail++; else ok++; }
+  back("/payments", fail ? "error" : "ok", `${ok} payment(s) confirmed${fail ? `; ${fail} could not be confirmed (open "Reject a payment" below to look at them)` : ". Receipts were made."}`);
+}

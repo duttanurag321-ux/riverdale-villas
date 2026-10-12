@@ -16,7 +16,7 @@ export default async function Approvals({ searchParams }: { searchParams: { ok?:
   if (paths.length) { const { data: s } = await sb.storage.from("construction-photos").createSignedUrls(paths, 3600); (s ?? []).forEach((x: any) => x.signedUrl && signed.set(x.path, x.signedUrl)); }
   return (
     <>
-      <PageHeader title="Construction approvals" subtitle="Approving a stage can make a payment milestone payable, so check the photos first." />
+      <PageHeader title="Construction approvals" subtitle="Only key steps wait here. If you do nothing, they are approved by themselves after the waiting time set in Settings." />
       <Flash error={searchParams.error} ok={searchParams.ok} />
       {list.length === 0 ? <Empty>Nothing is waiting for approval.</Empty> : (
         <div className="space-y-4">{list.map((u) => (

@@ -1,4 +1,6 @@
 \set ON_ERROR_STOP on
+select set_config('role','postgres',false);
+update construction_stages set requires_approval = (name not in ('Booking confirmed','Site preparation'));
 \set dir  '''d0000000-0000-0000-0000-000000000001'''
 \set sm   '''a0000000-0000-0000-0000-000000000002'''
 \set sm2  '''a0000000-0000-0000-0000-000000000022'''

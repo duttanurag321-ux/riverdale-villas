@@ -11,7 +11,7 @@ export default async function Bookings({ searchParams }: { searchParams: { ok?: 
   const tone = (s: string) => (s === "confirmed" ? "green" : s === "cancelled" ? "red" : "amber");
   return (
     <>
-      <PageHeader title="Bookings" action={me.role === "director" ? <Link href="/bookings/new" className={btnCls}>New booking</Link> : undefined} />
+      <PageHeader title="Bookings" action={<Link href="/bookings/new" className={btnCls}>New booking</Link>} />
       <Flash error={searchParams.error} ok={searchParams.ok} />
       {rows.length === 0 ? <Empty>No bookings yet.</Empty> : (
         <Table head={["Villa", "Customer", "Booked on", "Contract value", "Status", ""]}>

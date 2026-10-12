@@ -1,5 +1,7 @@
 # Site Manager manual
 
+**Note:** most steps count as soon as you submit them. Key steps (Foundation, First slab, Final inspection, Handover) are approved by the Director or automatically after 24 hours. Customers are asked for payment by the system when your updates show progress, so regular updates with photos keep the money flowing. If you do not update a villa for 7 days, the Director is told.
+
 You see only Dashboard, Construction and Villas, and only the villas assigned to you. You cannot see prices, customers or payments.
 
 1. **Log in** with the email and password the Director gave you. Forgot it? **Forgot password?** on the login page.

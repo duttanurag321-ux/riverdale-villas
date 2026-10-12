@@ -27,6 +27,26 @@ export async function saveSettings(fd: FormData) {
   back("/settings", "ok", "Settings saved.");
 }
 
+export async function saveAutopilot(fd: FormData) {
+  await requireMe(["director"]);
+  const hrs = Number(str(fd, "auto_approve_hours")), pct = Number(str(fd, "auto_ask_max_percent")), minR = Number(str(fd, "auto_ask_min_rupees"));
+  if (!Number.isInteger(hrs) || hrs < 0 || hrs > 168) back("/settings", "error", "Waiting time must be between 0 and 168 hours (0 = never approve by itself).");
+  if (!Number.isInteger(pct) || pct < 1 || pct > 100) back("/settings", "error", "The automatic limit must be between 1 and 100 percent.");
+  if (!Number.isInteger(minR) || minR < 0) back("/settings", "error", "Smallest amount must be a whole number of rupees.");
+  const rows = [{ key: "autopilot_enabled", value: fd.get("autopilot_enabled") === "on" }, { key: "auto_approve_hours", value: hrs }, { key: "auto_ask_max_percent", value: pct },
+    { key: "auto_ask_min_rupees", value: minR }, { key: "auto_ask_pre_construction", value: fd.get("auto_ask_pre_construction") === "on" }].map((r) => ({ ...r, updated_at: new Date().toISOString() }));
+  const { error } = await createClient().from("system_settings").upsert(rows);
+  if (error) back("/settings", "error", friendly(error));
+  back("/settings", "ok", "Autopilot settings saved.");
+}
+
+export async function runAutopilotNow() {
+  await requireMe(["director"]);
+  const { data, error } = await createClient().rpc("autopilot_tick");
+  if (error) back("/settings", "error", friendly(error));
+  back("/settings", "ok", `Autopilot ran: ${(data as any)?.auto_approved ?? 0} step(s) approved, ${(data as any)?.auto_asked ?? 0} payment request(s) made, ${(data as any)?.needs_ok ?? 0} waiting for your OK.`);
+}
+
 export async function runChecksNow() {
   await requireMe(["director"]);
   const { data, error } = await createClient().rpc("run_daily_jobs");

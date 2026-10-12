@@ -1,5 +1,7 @@
 # Salesperson manual
 
+**New:** you can add your own customers and **prepare bookings** (Bookings, New booking: your villa, your customer, optional token). The price comes from the villa list. The Director only confirms. You are also the one who keeps payments flowing: the system now creates your call tasks and WhatsApp messages automatically; the Director is told if calls or messages are left more than a few days.
+
 You see Dashboard, Follow-ups, Customers, Bookings, Payments, Messages, Construction and Villas, limited to your own customers and bookings. You can never verify payments or change prices or plans.
 
 1. **Today's tasks**: **Follow-ups**. Each card shows customer, villa, milestone, remaining amount and dates. A task appears automatically when a payment becomes payable.

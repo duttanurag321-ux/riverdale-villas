@@ -3,7 +3,7 @@ import { requireMe } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, Field, Flash, PageHeader, btnCls, btnGhostCls, inputCls } from "@/components/ui";
 import { SubmitButton } from "@/components/SubmitButton";
-import { runChecksNow, saveSettings, saveTemplate } from "./actions";
+import { runAutopilotNow, runChecksNow, saveAutopilot, saveSettings, saveTemplate } from "./actions";
 
 const FREE_DB = 500 * 1024 * 1024, FREE_STORAGE = 1024 * 1024 * 1024;
 const mb = (b: number) => (b / 1048576).toFixed(1) + " MB";
@@ -24,7 +24,17 @@ export default async function Settings({ searchParams }: { searchParams: { ok?: 
     <>
       <PageHeader title="Settings" action={<div className="flex gap-2"><Link href="/import" className={btnGhostCls}>Import CSV</Link><Link href="/backup" className={btnGhostCls}>Backups</Link></div>} />
       <Flash error={searchParams.error} ok={searchParams.ok} />
-      <h2 className="mb-2 font-medium">Free-plan usage</h2>
+      <h2 className="mb-2 font-medium">Autopilot</h2>
+      <Card><form action={saveAutopilot} className="grid gap-4 sm:grid-cols-2">
+        <label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" name="autopilot_enabled" defaultChecked={S.autopilot_enabled !== false} /><b>Autopilot on</b> (the system asks customers for payments by itself when construction moves forward)</label>
+        <Field label="Largest request it may make by itself (% of the price)" hint="Anything bigger comes to you for one tap. Example: 10"><input name="auto_ask_max_percent" type="number" min={1} max={100} defaultValue={S.auto_ask_max_percent ?? 10} className={inputCls} /></Field>
+        <Field label="Smallest request worth making (₹)" hint="Avoids tiny requests. Example: 25000"><input name="auto_ask_min_rupees" type="number" min={0} defaultValue={S.auto_ask_min_rupees ?? 25000} className={inputCls} /></Field>
+        <Field label="Key construction steps are approved by themselves after (hours)" hint="If you do nothing. 0 = never. Example: 24"><input name="auto_approve_hours" type="number" min={0} max={168} defaultValue={S.auto_approve_hours ?? 24} className={inputCls} /></Field>
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="auto_ask_pre_construction" defaultChecked={S.auto_ask_pre_construction !== false} />Also ask for the money needed before construction starts</label>
+        <div className="flex flex-wrap items-center gap-2 sm:col-span-2"><SubmitButton className={btnCls} pendingText="Saving…">Save autopilot settings</SubmitButton></div></form>
+        <form action={runAutopilotNow} className="mt-3 border-t border-slate-100 pt-3"><SubmitButton className={btnGhostCls} pendingText="Running…">Run autopilot now</SubmitButton>
+          <span className="ml-2 text-xs text-slate-500">It normally runs by itself every 15 minutes. Use this to test, or if the Home screen says the automatic checks are not running.</span></form></Card>
+      <h2 className="mb-2 mt-8 font-medium">Free-plan usage</h2>
       <Card className="space-y-4">
         <Meter label="Database" used={Number(u.db_bytes ?? 0)} limit={FREE_DB} /><Meter label="Photo storage" used={Number(u.storage_bytes ?? 0)} limit={FREE_STORAGE} />
         <p className="text-xs text-slate-500">Rows: {u.notifications ?? 0} notifications · {u.drafts ?? 0} message drafts · {u.events ?? 0} events · {u.audit_rows ?? 0} audit entries · {u.payments ?? 0} payments. {Number(u.failed_events) > 0 && <b className="text-red-700">{u.failed_events} event(s) failed — press &ldquo;Run checks now&rdquo;; if they keep failing, check the message wording below.</b>}</p>

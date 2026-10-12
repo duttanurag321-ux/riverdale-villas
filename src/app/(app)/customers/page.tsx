@@ -22,7 +22,7 @@ export default async function Customers({ searchParams }: { searchParams: { q?: 
   const link = (p: number) => `/customers?page=${p}${searchParams.q ? `&q=${encodeURIComponent(searchParams.q)}` : ""}`;
   return (
     <>
-      <PageHeader title="Customers" subtitle={`${count ?? 0} customer(s)`} action={me.role === "director" ? <Link href="/customers/new" className={btnCls}>Add customer</Link> : undefined} />
+      <PageHeader title="Customers" subtitle={`${count ?? 0} customer(s)`} action={<Link href="/customers/new" className={btnCls}>Add customer</Link>} />
       <Flash error={searchParams.error} ok={searchParams.ok} />
       <form className="mb-4 flex gap-2"><input name="q" defaultValue={searchParams.q} placeholder="Search name or phone" className={`${inputCls} max-w-xs`} /><button className={btnGhostCls}>Search</button></form>
       {rows.length === 0 ? <Empty>No customers found.</Empty> : (

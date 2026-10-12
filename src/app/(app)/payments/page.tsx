@@ -4,12 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 import { fmtDate, fmtDateTime, inr, titleCase } from "@/lib/format";
 import { Badge, Card, Empty, Flash, PageHeader, Table, btnCls, btnDangerCls, btnGhostCls, inputCls } from "@/components/ui";
 import { SubmitButton } from "@/components/SubmitButton";
-import { rejectPayment, reversePayment, verifyPayment } from "./actions";
+import { rejectPayment, reversePayment, verifyMany, verifyPayment } from "./actions";
 
 export default async function Payments({ searchParams }: { searchParams: { ok?: string; error?: string } }) {
   const me = await requireMe(["director", "salesperson"]);
   const sb = createClient(); const isDir = me.role === "director";
-  const sel = "id, booking_id, kind, amount_paise, received_on, method, reference, verification, receipt_number, created_at, reverses_payment_id, purpose, paid_by, customers(full_name), bookings(villas(villa_number))";
+  const sel = "id, booking_id, kind, amount_paise, received_on, method, reference, verification, receipt_number, created_at, reverses_payment_id, purpose, paid_by, entered_by, customers(full_name), bookings(villas(villa_number))";
   const [{ data: pend }, { data: recent }] = await Promise.all([
     sb.from("payments").select(sel).eq("verification", "pending").order("created_at"),
     sb.from("payments").select(sel).eq("verification", "verified").order("created_at", { ascending: false }).limit(30),
@@ -26,9 +26,21 @@ export default async function Payments({ searchParams }: { searchParams: { ok?: 
       <PageHeader title="Payments" subtitle="Reported payments count only after the Director verifies them." action={<div className="flex gap-2">
         {isDir && <Link href="/plans" className={btnGhostCls}>Payment plans</Link>}<Link href="/payments/new" className={btnCls}>Report payment</Link></div>} />
       <Flash error={searchParams.error} ok={searchParams.ok} />
+      {isDir && pending.length > 0 && (
+        <Card className="mb-6 border-l-4 border-l-brand">
+          <form action={verifyMany}>
+            <div className="font-medium">Confirm what arrived</div>
+            <p className="text-sm text-slate-500">Look in your bank or UPI app for each line. Untick any you cannot find, then confirm.</p>
+            <div className="mt-3 divide-y divide-slate-100">{pending.map((p) => (
+              <label key={p.id} className="flex items-start gap-3 py-2"><input type="checkbox" name="ids" value={p.id} defaultChecked className="mt-1 h-5 w-5" />
+                <span className="flex-1"><b>{p.customers?.full_name}</b> <span className="text-slate-500">· Villa {p.bookings?.villas?.villa_number}</span><br />
+                  <span className="text-sm text-slate-500">{titleCase(p.method)}{p.reference ? ` · ref ${p.reference}` : " · no reference"} · {fmtDate(p.received_on)}{p.purpose === "token" ? " · token" : ""}{p.paid_by === "bank" ? " · from bank" : ""}</span></span>
+                <span className="font-semibold">{inr(Number(p.amount_paise))}</span></label>))}</div>
+            <SubmitButton className={`${btnCls} mt-3 px-6 py-3 text-base`} pendingText="Confirming…">Confirm selected payments</SubmitButton>
+          </form></Card>)}
       <h2 className="mb-2 font-medium">{isDir ? "Awaiting verification" : "My reports awaiting verification"} ({pending.length})</h2>
       {pending.length === 0 ? <Empty>Nothing is waiting.</Empty> : (
-        <div className="space-y-3">{pending.map((p) => (
+        <details open={!isDir}><summary className={isDir ? "mb-2 cursor-pointer text-sm text-brand underline" : "hidden"}>Reject a payment, or choose which milestone it pays</summary><div className="space-y-3">{pending.map((p) => (
           <Card key={p.id}>
             <div className="flex flex-wrap items-center gap-2"><span className="font-medium">Villa {p.bookings?.villas?.villa_number} — {p.customers?.full_name}</span>
               <span className="text-lg font-semibold">{inr(Number(p.amount_paise))}</span><Badge tone="amber">Pending</Badge>{p.purpose === "token" && <Badge tone="blue">Token</Badge>}{p.paid_by === "bank" && <Badge tone="blue">From bank</Badge>}
@@ -42,7 +54,7 @@ export default async function Payments({ searchParams }: { searchParams: { ok?: 
                 <form action={rejectPayment} className="flex flex-1 flex-wrap items-end gap-2"><input type="hidden" name="id" value={p.id} />
                   <input name="reason" required placeholder="Reason if not received" className={`${inputCls} min-w-[10rem] flex-1`} /><SubmitButton className={btnDangerCls}>Reject</SubmitButton></form>
               </div>)}
-          </Card>))}</div>)}
+          </Card>))}</div></details>)}
       <h2 className="mb-2 mt-8 font-medium">Recent verified payments</h2>
       {done.length === 0 ? <Empty>No verified payments yet.</Empty> : (
         <Table head={["Verified", "Villa", "Customer", "Amount", "Receipt", ""]}>

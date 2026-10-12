@@ -123,3 +123,15 @@ export async function releaseConstruction(fd: FormData) {
   if (error) back(`/bookings/${id}`, "error", friendly(error));
   back(`/bookings/${id}`, "ok", release ? "Construction is allowed to start." : "Construction is locked again until the payment condition is met.");
 }
+
+export async function startBooking(fd: FormData) {
+  await requireMe(["salesperson", "director"]); const P = "/bookings/new";
+  const villa = str(fd, "villa_id"), customer = str(fd, "customer_id");
+  if (!villa || !customer) back(P, "error", "Choose a villa and a customer.");
+  let token: number | null = null; const raw = str(fd, "token_amount");
+  if (raw) { token = rupeesToPaise(raw); if (!token) back(P, "error", "Token amount must be a number of rupees."); }
+  const { data, error } = await createClient().rpc("start_booking", { p_villa: villa, p_customer: customer, p_token_paise: token, p_method: str(fd, "token_method") || "upi",
+    p_reference: opt(fd, "token_reference"), p_received_on: str(fd, "token_date") || new Date().toISOString().slice(0, 10), p_request_id: opt(fd, "request_id") });
+  if (error) back(P, "error", friendly(error));
+  back(`/bookings/${data}`, "ok", "Booking prepared. The Director has been told and only needs to confirm it. If a token was received, the Director confirms that too.");
+}

@@ -10,6 +10,8 @@
 | SQL error "already exists" | File run twice | Harmless: it already worked |
 | SQL error "does not exist" | A file was skipped | Run files in numeric order 001 to 009 |
 | Photos won't upload | `005` not run, or photo over 5 MB / not an image, or you are not assigned to that villa | Check Storage bucket; assign the villa; retry |
+| Home banner says "automatic checks have not run" | pg_cron is off or `011` schedule did not run, or the project was paused | Database, Extensions: switch on pg_cron, run the two `cron.schedule` lines from PHASE8_README; or press More, Settings, Run autopilot now |
+| The system did not ask a customer for money | Autopilot off, suggestion below the minimum amount, nothing left to ask (no "balance asked later" line), or the request is above the automatic limit (it then waits for your OK on Home) | Check Settings, Autopilot and the booking page |
 | "Construction cannot start yet" | The booking has not received the required % of the price (default 40%) and the Director has not released it | Director: booking page, "Allow construction to start now", or collect the payment; threshold in More, Settings |
 | "Only ₹X is left to ask for" / "no balance left" | The booking plan has no unasked balance left | Booking page, Change plan (amend), or confirm the plan has a "balance asked later" line |
 | Update list has no villa | Villa is Available (no confirmed booking) or not assigned to you | Confirm a booking; assign the Site Manager |

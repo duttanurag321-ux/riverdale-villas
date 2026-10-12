@@ -5,7 +5,7 @@ You do not need to know programming. You will use three websites in your browser
 ## Checklist (tick as you go)
 1. [ ] Unzip the project on your computer
 2. [ ] Create the Supabase project (Part 1)
-3. [ ] Run the 10 SQL files in order (Part 2)
+3. [ ] Run the 11 SQL files in order (Part 2)
 4. [ ] Turn on the daily scheduler (Part 3)
 5. [ ] Create the Director login (Part 4)
 6. [ ] Copy 3 keys from Supabase (Part 5)
@@ -25,7 +25,7 @@ Download the latest project ZIP. Windows: right-click it, **Extract All**. Open 
 
 ## Part 2 — Create the tables (SQL files)
 These files build the tables and rules. Run them **in this order, each once**:
-`001_schema`, `002_functions_and_triggers`, `003_rls_and_grants`, `004_seed_reference_data`, `005_construction_storage`, `006_followups_amendments`, `007_notifications_free`, then (after Part 3) `008_schedule_jobs`, then `009_csv_import`, then `010_real_flow`.
+`001_schema`, `002_functions_and_triggers`, `003_rls_and_grants`, `004_seed_reference_data`, `005_construction_storage`, `006_followups_amendments`, `007_notifications_free`, then (after Part 3) `008_schedule_jobs`, then `009_csv_import`, then `010_real_flow`, then `011_autopilot`.
 For each file:
 1. Left menu **SQL Editor**, **New query**.
 2. Open the file from `supabase/migrations` in Notepad, **Ctrl+A**, **Ctrl+C**.

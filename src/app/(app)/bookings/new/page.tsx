@@ -4,9 +4,11 @@ import { requireMe } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, Empty, Field, Flash, PageHeader, btnCls, inputCls } from "@/components/ui";
 import { createBooking } from "../actions";
+import SalesBookingForm from "./SalesBookingForm";
 
 export default async function NewBooking({ searchParams }: { searchParams: { error?: string } }) {
-  await requireMe(["director"]);
+  const me = await requireMe(["director", "salesperson"]);
+  if (me.role === "salesperson") return <SalesBookingForm error={searchParams.error} />;
   const sb = createClient();
   const [{ data: villas }, { data: live }, { data: customers }, { data: sp }, { data: templates }] = await Promise.all([
     sb.from("villas").select("id, villa_number, configuration, projects(name)").in("status", ["available", "reserved"]).order("villa_number"),

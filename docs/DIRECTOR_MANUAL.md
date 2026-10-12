@@ -1,5 +1,7 @@
 # Director manual
 
+**Autopilot:** the system does the routine work. Your daily job is Home: green banner, then Needs you (confirm payments, confirm new bookings, OK big requests). See PHASE8_README.md for what runs automatically and how to change the limits (More, Settings, Autopilot).
+
 **New to this? Read DIRECTOR_QUICK_GUIDE.md first (one page).** Menu now: Home, Bookings, Money, Building, Messages, More (customers, villas, follow-ups, reports, plans, staff, settings, import, backups).
 
 How Riverdale sales work in the system: token, 10% booking, 40-50% before construction (own money or loan), then **Ask for payment** whenever funds are needed, with a suggestion and your own choice of amount (rupees or percent).
